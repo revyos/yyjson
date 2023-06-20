@@ -1,15 +1,23 @@
-Source: template-repository
-Section: unknown
+Source: yyjson
 Priority: optional
-Maintainer: Tsic404 <liuheng@deepin.org>
-Build-Depends: debhelper (>= 11)
-Standards-Version: 4.1.3
-Homepage: https://github.com/deepin-community/template-repository
-#Vcs-Browser: https://salsa.debian.org/debian/deepin-community-template-repository
-#Vcs-Git: https://salsa.debian.org/debian/deepin-community-template-repository.git
+Maintainer: unknown <xiangzelong@deepin.org>
+Build-Depends: debhelper-compat (= 13),
+                libmpfr-dev,
+                libgmp-dev,
+Standards-Version: 4.6.0
+Section: libs
+Homepage: https://github.com/ibireme/yyjson
+Rules-Requires-Root: no
 
-Package: template-repository
+Package: yyjson-dev
+Section: libdevel
 Architecture: any
+Multi-Arch: same
+Depends: yyjson (= ${binary:Version}), ${misc:Depends}
+Description: A high performance JSON library written in ANSI C.
+
+Package: yyjson
+Architecture: any
+Multi-Arch: same
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: <insert up to 60 chars description>
- <insert long description, indented with spaces>
+Description: A high performance JSON library written in ANSI C.
