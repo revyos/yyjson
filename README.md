@@ -5,6 +5,7 @@
 [![Codecov](https://img.shields.io/codecov/c/github/ibireme/yyjson/master?style=flat-square)](https://codecov.io/gh/ibireme/yyjson)
 [![License](https://img.shields.io/github/license/ibireme/yyjson?color=blue&style=flat-square)](https://github.com/ibireme/yyjson/blob/master/LICENSE)
 [![Version](https://img.shields.io/github/v/release/ibireme/yyjson?color=orange&style=flat-square)](https://github.com/ibireme/yyjson/releases)
+[![Packaging status](https://img.shields.io/repology/repositories/yyjson.svg?style=flat-square)](https://repology.org/project/yyjson/versions)
 
 A high performance JSON library written in ANSI C.
 
@@ -74,7 +75,7 @@ More benchmark reports with interactive charts (update 2020-12-12)
     * high instruction level parallelism
     * excellent branch predictor
     * low penalty for misaligned memory access
-* A modern compiler with good optimizer.
+* A modern compiler with good optimizer (e.g. clang)
 
 
 # Sample Code
@@ -202,6 +203,26 @@ The pre-generated Doxygen HTML for the release version can be viewed here:
     * [Data structure](https://ibireme.github.io/yyjson/doc/doxygen/html/md_doc__data_structure.html)
     * [Changelog](https://ibireme.github.io/yyjson/doc/doxygen/html/md__c_h_a_n_g_e_l_o_g.html)
 
+# Packaging status
+
+[![Packaging status](https://repology.org/badge/vertical-allrepos/yyjson.svg)](https://repology.org/project/yyjson/versions)
+
+# Built With yyjson
+
+A non-exhaustive list of projects that expose yyjson to other languages or
+use yyjson internally for a major feature. If you have a project that uses
+yyjson, feel free to open a PR to add it to this list.
+
+| Project        | Language | Description                                                  |
+|----------------|----------|--------------------------------------------------------------|
+| [py_yyjson][]  | Python   | Python bindings for yyjson                                   |
+| [orjson][]     | Python   | JSON library for Python with an optional yyjson backend      |
+| [cpp-yyjson][] | C++      | C++ JSON library with a yyjson backend                       |
+| [yyjsonr][]    | R        | R binding for yyjson                                         |
+| [Anada][]      | Swift    | JSON model decoding based on yyjson                          |
+| [duckdb][]     | C++      | DuckDB is an in-process SQL OLAP Database Management System  |
+
+
 # TODO
 * [x] Add documentation page.
 * [x] Add GitHub workflow for CI and codecov.
@@ -215,3 +236,11 @@ The pre-generated Doxygen HTML for the release version can be viewed here:
 
 # License
 This project is released under the MIT license.
+
+
+[py_yyjson]: https://github.com/tktech/py_yyjson
+[orjson]: https://github.com/ijl/orjson
+[cpp-yyjson]: https://github.com/yosh-matsuda/cpp-yyjson
+[yyjsonr]: https://github.com/coolbutuseless/yyjsonr
+[Anada]: https://github.com/nixzhu/Ananda
+[duckdb]: https://github.com/duckdb/duckdb

@@ -545,21 +545,24 @@ void yyjson_doc_free(yyjson_doc *doc);
 
 Each JSON Value has a type and subtype, as specified in the table:
 
-| Type             | Subtype              |                   |
-| ---------------- | -------------------- | ----------------- |
-| YYJSON_TYPE_NONE |                      | Invalid value     |
-| YYJSON_TYPE_RAW  |                      | Raw string        |
-| YYJSON_TYPE_NULL |                      | `null` literal    |
-| YYJSON_TYPE_BOOL | YYJSON_SUBTYPE_FALSE | `false` literal   |
-| YYJSON_TYPE_BOOL | YYJSON_SUBTYPE_TRUE  | `true` literal    |
-| YYJSON_TYPE_NUM  | YYJSON_SUBTYPE_UINT  | `uint64_t` nummer |
-| YYJSON_TYPE_NUM  | YYJSON_SUBTYPE_SINT  | `int64_t` number  |
-| YYJSON_TYPE_NUM  | YYJSON_SUBTYPE_REAL  | `double` number   |
-| YYJSON_TYPE_STR  |                      | String value      |
-| YYJSON_TYPE_ARR  |                      | Array value       |
-| YYJSON_TYPE_OBJ  |                      | Object value      |
+| Type             | Subtype              |                         |
+| ---------------- | -------------------- | ----------------------- |
+| YYJSON_TYPE_NONE |                      | Invalid value           |
+| YYJSON_TYPE_RAW  |                      | Raw string              |
+| YYJSON_TYPE_NULL |                      | `null` literal          |
+| YYJSON_TYPE_BOOL | YYJSON_SUBTYPE_FALSE | `false` literal         |
+| YYJSON_TYPE_BOOL | YYJSON_SUBTYPE_TRUE  | `true` literal          |
+| YYJSON_TYPE_NUM  | YYJSON_SUBTYPE_UINT  | `uint64_t` nummer       |
+| YYJSON_TYPE_NUM  | YYJSON_SUBTYPE_SINT  | `int64_t` number        |
+| YYJSON_TYPE_NUM  | YYJSON_SUBTYPE_REAL  | `double` number         |
+| YYJSON_TYPE_STR  |                      | String value            |
+| YYJSON_TYPE_STR  | YYJSON_SUBTYPE_NOESC | String value, no-escape |
+| YYJSON_TYPE_ARR  |                      | Array value             |
+| YYJSON_TYPE_OBJ  |                      | Object value            |
 
-Note that `YYJSON_TYPE_NONE` does not appear when the JSON is successfully parsed, and `YYJSON_TYPE_RAW` only appears when the corresponding flag is used. All other types are JSON-standard types.
+- `YYJSON_TYPE_NONE` means invalid value, it does not appear when the JSON is successfully parsed.
+- `YYJSON_TYPE_RAW` only appears when the corresponding flag `YYJSON_READ_XXX_AS_RAW` is used.
+- `YYJSON_SUBTYPE_NOESC` is used to optimize the writing speed of strings that do not need to be escaped. This subtype is used internally, and the user does not need to handle it.
 
 The following functions can be used to determine the type of a JSON value.
 
@@ -1098,7 +1101,9 @@ bool yyjson_mut_obj_add_str(yyjson_mut_doc *doc, yyjson_mut_val *obj, const char
 bool yyjson_mut_obj_add_strn(yyjson_mut_doc *doc, yyjson_mut_val *obj, const char *key, const char *val, size_t len);
 bool yyjson_mut_obj_add_strcpy(yyjson_mut_doc *doc, yyjson_mut_val *obj, const char *key, const char *val);
 bool yyjson_mut_obj_add_strncpy(yyjson_mut_doc *doc, yyjson_mut_val *obj, const char *key, const char *val, size_t len);
-
+yyjson_mut_val *yyjson_mut_obj_add_arr(yyjson_mut_doc *doc, yyjson_mut_val *obj, const char *_key);
+yyjson_mut_val *yyjson_mut_obj_add_obj(yyjson_mut_doc *doc, yyjson_mut_val *obj, const char *_key);
+                              
 // Convenience API:
 // Removes all key-value pairs for the given key.
 // Note that this function takes a linear search time.
@@ -1363,8 +1368,9 @@ The library does not directly call libc's memory allocation functions (malloc/re
 
 Using a custom memory allocator allows you to have more control over memory allocation, here are a few examples:
 
+
 ## Single allocator for multiple JSON
-If you need to parse multiple small JSON, you can use a single allocator with pre-allocated buffer to avoid frequent memory allocation.
+If you need to parse multiple small JSON one by one, you can use a single allocator to avoid multiple memory allocations.
 
 Sample code:
 ```c
@@ -1378,7 +1384,7 @@ void *buf = malloc(buf_size);
 yyjson_alc alc;
 yyjson_alc_pool_init(&alc, buf, buf_size);
 
-// read multiple JSON with single allocator
+// read multiple JSON using one allocator
 for(int i = 0, i < your_json_file_count; i++) {
     const char *your_json_file_path = ...;
     yyjson_doc *doc = yyjson_read_file(your_json_file_path, 0, &alc, NULL);
@@ -1389,6 +1395,25 @@ for(int i = 0, i < your_json_file_count; i++) {
 // free the buffer
 free(buf);
 ```
+
+If you are not sure about the amount of memory required to process JSON, you can use the dynamic allocator.
+```c
+// create a dynamic allocator
+yyjson_alc *alc = yyjson_alc_dyn_new();
+
+// read multiple JSON using one allocator
+for(int i = 0, i < your_json_file_count; i++) {
+    const char *your_json_file_path = ...;
+    yyjson_doc *doc = yyjson_read_file(your_json_file_path, 0, alc, NULL);
+    ...
+    yyjson_doc_free(doc);
+}
+
+// free the allocator
+yyjson_alc_dyn_free(alc);
+```
+
+
 
 ## Stack memory allocator
 If the JSON is small enough, you can use stack memory to read or write it.

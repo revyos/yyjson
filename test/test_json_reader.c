@@ -22,6 +22,19 @@ typedef enum {
 } flag_type;
 
 static void test_read_file(const char *path, flag_type type, expect_type expect) {
+    
+#if YYJSON_DISABLE_UTF8_VALIDATION
+    {
+        u8 *dat;
+        usize dat_len;
+        if (yy_file_read(path, &dat, &dat_len)) {
+            bool is_utf8 = yyb_str_is_utf8((const char *)dat, dat_len);
+            free(dat);
+            if (!is_utf8) return;
+        }
+    }
+#endif
+    
     yyjson_read_flag flag = YYJSON_READ_NOFLAG;
     if (type & FLAG_COMMA) flag |= YYJSON_READ_ALLOW_TRAILING_COMMAS;
     if (type & FLAG_COMMENT) flag |= YYJSON_READ_ALLOW_COMMENTS;
@@ -77,7 +90,7 @@ static void test_read_file(const char *path, flag_type type, expect_type expect)
     yy_assert(read_suc);
     
     usize max_mem_len = yyjson_read_max_memory_usage(len, flag);
-    void *buf = malloc(max_mem_len );
+    void *buf = malloc(max_mem_len);
     yyjson_alc alc;
     yyjson_alc_pool_init(&alc, buf, max_mem_len);
     
