@@ -1,5 +1,6 @@
-yyjson (0.8.0) UNRELEASED; urgency=medium
+yyjson (0.8.0) unstable; urgency=medium
 
+  [ zhangkun ]
   * New upstream version
   * Add `YYJSON_SUBTYPE_NOESC` subtype to mark strings that do not need to be escaped.
   * Add `YYJSON_DISABLE_UTF8_VALIDATION` flag to allow disable UTF-8 validation at compile-time.
@@ -9,7 +10,7 @@ yyjson (0.8.0) UNRELEASED; urgency=medium
   * Fix clang-16 valgrind fail: #134
   * Fix compile break when both `FAST_FP` and `READER` are disabled
 
- -- zhangkun <zhangkun2@uniontech.com>  Tue, 03 Oct 2023 17:23:14 +0800
+ -- Han Gao <gaohan@iscas.ac.cn>  Sun, 19 Nov 2023 15:41:52 +0800
 
 yyjson (0.7.0) UNRELEASED; urgency=medium
 

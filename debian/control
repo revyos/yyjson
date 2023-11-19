@@ -1,11 +1,11 @@
 Source: yyjson
 Priority: optional
-Maintainer: unknown <xiangzelong@deepin.org>
+Maintainer: xiangzelong <xiangzelong@deepin.org>
 Build-Depends: debhelper-compat (= 13),
                 libmpfr-dev,
                 libgmp-dev,
                 cmake,
-Standards-Version: 4.6.0
+Standards-Version: 4.6.2
 Section: libs
 Homepage: https://github.com/ibireme/yyjson
 Rules-Requires-Root: no
